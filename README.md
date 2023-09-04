@@ -1,42 +1,36 @@
+Deepfake Detection 👁️
 
-### Deepfake Detection
+We aim to distinguish between real images and AI-generated deepfake images, contributing to the fight against disinformation and fraud. Here's why it matters:
 
-We want to be able to diferenciate images from AI generated images.
-(Maybe also a nice explanation of WHY?)
+Deepfake technology has the potential to create highly convincing fake videos and images, which can be used for malicious purposes. By developing effective deepfake detection methods, we can help protect individuals and organizations from falling victim to misinformation and scams. Our project focuses on detecting these AI-generated alterations and enhancing media trustworthiness. 🕵️‍♂️
 
-Pitch link:
-https://docs.google.com/presentation/d/1y4D4UnabuaEQm8CRmkhLp0dVFm8lmjB40ltkDNpZ3pU/edit#slide=id.g278f5df32ba_1_2865
+Pitch link: Deepfake Detection Presentation
 
-Explanation of the dataset:
-https://www.kaggle.com/datasets/ciplab/real-and-fake-face-detection
+Explanation of the dataset: Real and Fake Face Detection Dataset
 
-
-This is the link of the repository: https://github.com/RayVinc/DeepFakeDetection
+This is the link to the repository: DeepFakeDetection Repository
 
 Collaborators:
+
 @RayVinc
 @sergioestebanez
 @Lebaozki
 @MalvinaGP
 
-# 1️⃣ Local Setup
+1️⃣ Local Setup 🏠
 
-### 1.1) Workin with a local enviroment decision [🐍 lewagon]
+1.1) Working with a Local Environment Decision 🐍
+We are utilizing the Le Wagon environment, with the possibility of requiring additional packages. 📦 This choice is informed by its compatibility with Kaggle, which we are using for data exploration, preprocessing, modeling, and fitting. Kaggle notebooks provide quick access to our data. After this phase, we will transition our code to Python files.
 
-We use Le Wagon enviroment, we are still mising if we are going to need any extra package. #Trello_task
-We are working with Kaggle for the data exploring, the preprocessing part, the modeling and the fit; Kaggle notebook is replacing Jupyter nOTEBOO becasue of the quick access to our data.
-After this part we will bring our code to Python files. #Trello_task
-
-### 1.2) Define the Deep-fake package structure
-#Trello_task (don't forget to actulize during the packaging process)
-
+1.2) Define the Deepfake Package Structure 📂
+Our project's directory structure is designed for organization and easy access. 🧩
 
 ```bash
 . # Challenge folder root
 ├── Makefile          # 🚪 Your command "launcher". Use it extensively (launch training, tests, etc...) #Trello_task
 ├── README.md         # The file you are reading right now! daily #Trello_task
 ├── notebooks
-│   └── deepfake.ipynb   # Content result of Data Analys of the data set, preprocessor tasks & model.
+│   └── deepfake.ipynb   # Content result of Data Analysis of the data set, preprocessor tasks & model.
 ├── requirements.txt   # List all third-party packages to add to your local environment
 ├── setup.py           # Enable `pip install` for your package
 ├── deepfake           # The code logic for this package
@@ -56,38 +50,37 @@ After this part we will bring our code to Python files. #Trello_task
 |
 ├── tests  # Tests to run using `make test_...`
 │   ├── ...
-│   └── ...  #Trello_task Create tests to check our code as we move forward (discuss if necesary)
+│   └── ...  #Trello_task Create tests to check our code as we move forward (discuss if necessary)
 ├── .gitignore
-```
+
+2️⃣ Data Scientist Approach 🧪
+
+2.1) Load Data 📂
+
+2.2) Exploratory Data Analysis 🔍
+
+2.3) Baseline Score and Model 📊
+
+2.4) Researching the Best Model 🧠
+
+2.5) Preprocess Data 🧹
+
+2.6) Architectural Model 🏗️
+
+2.7) Evaluate Model 📈
+
+2.8) Fine-tuning 🛠️
+
+2.9) Extra Data 📚
+
+3️⃣ Package Your Code 📦
+
+Our goal is to make the deepface.interface.main_local module runnable as seen below.
+
+4️⃣ Investigate Scalability 📈
 
 
-# 2️⃣ Data Scientist approach.
+5️⃣ Video Processing 📹
 
-### 2.1) Load data
-
-### 2.1) Exploratory data analisys
-
-### 2.2) Baselina score and model
-
-### 2.2) Researching best model
-
-### 2.3) Preprocess data (maybe compress/divide data set with labels/consider some featuring engeneering)
-
-### 2.4) Arquitechture model
-
-### 2.5) Evaluation model
-
-### 2.6) Finetunning
-
-### 2.7) Extra data
-
-# 3️⃣ Package Your Code
-
-🎯 THe goal is to be able to run the `deepface.interface.main_local` module as seen below
-
-# 4️⃣ Investigate Scalability
-
-# 5️⃣ Video processing
-
-## 5️.1 Incremental Processing
-## 5️.2 Incremental Learning
+5.1 Incremental Processing 🔄
+5.2 Incremental Learning 📚
