@@ -10,8 +10,9 @@ def loading_data():
     image_size = (256, 256)
 
     train_ds, val_ds = image_dataset_from_directory(
-        "/kaggle/input/real-and-fake-face-detection/real_and_fake_face", #FIX IT!!! We need to have the data localy on the RAW DATA folder
+        "/kaggle/input/deepfakedetection-lw/Project_Data/real_and_fake_face",
         validation_split=0.2,
+        color_mode = 'rgb',
         subset="both",
         label_mode = "categorical",
         seed=123,
