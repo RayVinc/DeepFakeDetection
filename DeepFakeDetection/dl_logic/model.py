@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
+import os
 
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import image_dataset_from_directory
@@ -9,6 +10,7 @@ from tensorflow.keras import models, Sequential, layers, regularizers
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Recall, Precision
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+
 
 
 def intialize_model():
@@ -44,6 +46,7 @@ def compile_model(model):
     model.compile(optimizer='adam',
                 loss='categorical_crossentropy',
                 metrics=metrics)
+    return model
 
 def train_model(model, train_ds, val_ds):
 
@@ -108,36 +111,22 @@ def evaluate(history):
 
     return None
 
-def predict(model):
 
-    prediction = ''
+def load_model():
 
-    test_easy = image_dataset_from_directory(
-        "/kaggle/input/test-data-deepfake-images/real_and_fake_face_test_data/test_easy",
-        color_mode = 'rgb',
-        shuffle=True,
-        batch_size = 32,
-        label_mode = "categorical",
-        image_size=(256, 256))
+    path_abs = os.getcwd()
 
-    for images, labels in test_easy:
-        num_images_to_display = 1
+    model = tf.keras.models.load_model(os.path.join(path_abs,
+                                       'DeepFakeDetection/models/base_model_federico_is_not_helping.h5'),
+                                       compile=False)
+    return model
 
-        predictions = model.predict(images)
-        predictions = where(predictions < 0.5,0, 1)
+def predict(model, image_array):
 
-        for i in range(num_images_to_display):
-            plt.subplot(1, num_images_to_display, i + 1)
-            plt.imshow(images[i].numpy().astype("uint8"))  # Convert the tensor to a NumPy array
-            plt.title(f"Label: {labels[i].numpy()}, pred: {predictions[i]}")
-            plt.axis("off")
+    image_array = image_array.reshape((1,) + image_array.shape)
 
-        plt.show()
+    y_pred = model.predict(image_array)[0]
+    #y_pred = tf.where(predictions > 0.5,0, 1)
+    result = ['fake' if y_pred[0] > 0.5 else 'real' ]
 
-    if labels == [1, 0]:
-        prediction == 'fake'
-    else:
-        prediction == 'real'
-
-    return prediction
-        # label: [1. 0.] -> fake // label: [0. 1.] -> real
+    return {'prob':result[0]}

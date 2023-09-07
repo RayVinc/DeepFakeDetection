@@ -1,7 +1,7 @@
 .env
 .env.yaml
 train_flow-deployment.yaml
-
+models/
 # System files
 .DS_Store
 .ipynb_checkpoints
