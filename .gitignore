@@ -1,5 +1,5 @@
 .env
-#.env.yaml
+.env.yaml
 train_flow-deployment.yaml
 models/
 # System files
@@ -15,6 +15,7 @@ dist/
 *.vscode
 raw_data/
 result_image.jpeg
+
 
 # Data files
 *.csv
