@@ -19,6 +19,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install\
 
 RUN pip install --upgrade pip
 #make sure it's always updated!
+RUN pip cache purge
 RUN pip install -r requirements.txt
 #install package dependencies
 RUN pip install .
