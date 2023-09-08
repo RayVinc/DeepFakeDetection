@@ -117,7 +117,7 @@ def load_model():
     path_abs = os.getcwd()
 
     model = tf.keras.models.load_model(os.path.join(path_abs,
-                                       'DeepFakeDetection/models/base_model_federico_is_not_helping.h5'),
+                                       'DeepFakeDetection/models/ELA_imagesize256_256_batchsize64_3Con+3Denselayers.h5'),
                                        compile=False)
     return model
 
@@ -125,8 +125,9 @@ def predict(model, image_array):
 
     image_array = image_array.reshape((1,) + image_array.shape)
 
-    y_pred = model.predict(image_array)[0]
+    y_pred = model.predict(image_array)
+    print(f'{y_pred = }')
     #y_pred = tf.where(predictions > 0.5,0, 1)
-    result = ['fake' if y_pred[0] > 0.5 else 'real' ]
+    result = ['fake' if y_pred[0][0] > 0.5 else 'real' ]
 
     return {'prob':result[0]}
