@@ -1,7 +1,6 @@
 FROM python:3.10-slim
 #3.8.12 if it doesn't work
 
-
 WORKDIR /prod
 #COPY . .
 #everything from here to prod
