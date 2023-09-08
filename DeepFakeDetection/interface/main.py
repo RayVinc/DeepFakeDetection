@@ -13,61 +13,61 @@ from DeepfakeDetection.dl_logic.registry import mlflow_run, mlflow_transition_mo
 
 
 # def preprocess(transfor image size if is input from user) -> None:
-    """
-    - Query the raw dataset from Le Wagon's BigQuery dataset
-    - Cache query result as a local CSV if it doesn't exist locally
-    - Process query data
-    - Store processed data on your personal BQ (truncate existing table if it exists)
-    - No need to cache processed data as CSV (it will be cached when queried back from BQ during training)
-    """
+#     """
+#     - Query the raw dataset from Le Wagon's BigQuery dataset
+#     - Cache query result as a local CSV if it doesn't exist locally
+#     - Process query data
+#     - Store processed data on your personal BQ (truncate existing table if it exists)
+#     - No need to cache processed data as CSV (it will be cached when queried back from BQ during training)
+#     """
 
-    print(Fore.MAGENTA + "\n ⭐️ Use case: preprocess" + Style.RESET_ALL)
+#     print(Fore.MAGENTA + "\n ⭐️ Use case: preprocess" + Style.RESET_ALL)
 
-    # Query raw data from BigQuery using `get_data_with_cache`
-    min_date = parse(min_date).strftime('%Y-%m-%d') # e.g '2009-01-01'
-    max_date = parse(max_date).strftime('%Y-%m-%d') # e.g '2009-01-01'
+#     # Query raw data from BigQuery using `get_data_with_cache`
+#     min_date = parse(min_date).strftime('%Y-%m-%d') # e.g '2009-01-01'
+#     max_date = parse(max_date).strftime('%Y-%m-%d') # e.g '2009-01-01'
 
-    query = f"""
-        SELECT {",".join(COLUMN_NAMES_RAW)}
-        FROM {GCP_PROJECT_WAGON}.{BQ_DATASET}.raw_{DATA_SIZE}
-        WHERE pickup_datetime BETWEEN '{min_date}' AND '{max_date}'
-        ORDER BY pickup_datetime
-    """
+#     query = f"""
+#         SELECT {",".join(COLUMN_NAMES_RAW)}
+#         FROM {GCP_PROJECT_WAGON}.{BQ_DATASET}.raw_{DATA_SIZE}
+#         WHERE pickup_datetime BETWEEN '{min_date}' AND '{max_date}'
+#         ORDER BY pickup_datetime
+#     """
 
-    # Retrieve data using `get_data_with_cache`
-    data_query_cache_path = Path(LOCAL_DATA_PATH).joinpath("raw", f"query_{min_date}_{max_date}_{DATA_SIZE}.csv")
-    data_query = get_data_with_cache(
-        query=query,
-        gcp_project=GCP_PROJECT,
-        cache_path=data_query_cache_path,
-        data_has_header=True
-    )
+#     # Retrieve data using `get_data_with_cache`
+#     data_query_cache_path = Path(LOCAL_DATA_PATH).joinpath("raw", f"query_{min_date}_{max_date}_{DATA_SIZE}.csv")
+#     data_query = get_data_with_cache(
+#         query=query,
+#         gcp_project=GCP_PROJECT,
+#         cache_path=data_query_cache_path,
+#         data_has_header=True
+#     )
 
-    # Process data
-    data_clean = clean_data(data_query)
+#     # Process data
+#     data_clean = clean_data(data_query)
 
-    X = data_clean.drop("fare_amount", axis=1)
-    y = data_clean[["fare_amount"]]
+#     X = data_clean.drop("fare_amount", axis=1)
+#     y = data_clean[["fare_amount"]]
 
-    X_processed = preprocess_features(X)
+#     X_processed = preprocess_features(X)
 
-    # Load a DataFrame onto BigQuery containing [pickup_datetime, X_processed, y]
-    # using data.load_data_to_bq()
-    data_processed_with_timestamp = pd.DataFrame(np.concatenate((
-        data_clean[["pickup_datetime"]],
-        X_processed,
-        y,
-    ), axis=1))
+#     # Load a DataFrame onto BigQuery containing [pickup_datetime, X_processed, y]
+#     # using data.load_data_to_bq()
+#     data_processed_with_timestamp = pd.DataFrame(np.concatenate((
+#         data_clean[["pickup_datetime"]],
+#         X_processed,
+#         y,
+#     ), axis=1))
 
-    load_data_to_bq(
-        data_processed_with_timestamp,
-        gcp_project=GCP_PROJECT,
-        bq_dataset=BQ_DATASET,
-        table=f'processed_{DATA_SIZE}',
-        truncate=True
-    )
+#     load_data_to_bq(
+#         data_processed_with_timestamp,
+#         gcp_project=GCP_PROJECT,
+#         bq_dataset=BQ_DATASET,
+#         table=f'processed_{DATA_SIZE}',
+#         truncate=True
+#     )
 
-    print("✅ preprocess() done \n")
+#     print("✅ preprocess() done \n")
 
 @mlflow_run
 def train(
