@@ -1,8 +1,7 @@
+# Env
 .env
 .env.yaml
-train_flow-deployment.yaml
-models/
-old_models
+
 # System files
 .DS_Store
 .ipynb_checkpoints
@@ -14,19 +13,17 @@ dist/
 *.iml
 *.egg-info
 *.vscode
-raw_data/
-result_image.jpeg
-
 
 # Data files
 *.csv
 *.sqlite
 *.zip
-training_outputs/
 
 *.sublime-project
 *.sublime-workspace
 **/*.code-workspace
 
-# Other
-pytestdebug.log
+# Folders
+raw_data/
+models/
+result_image.jpeg
