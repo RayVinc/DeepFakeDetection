@@ -1,3 +1,5 @@
+#Ask TA what is the goal of this file
+
 from setuptools import find_packages
 from setuptools import setup
 
