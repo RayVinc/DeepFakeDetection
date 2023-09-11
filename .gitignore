@@ -14,6 +14,9 @@ dist/
 *.iml
 *.egg-info
 *.vscode
+raw_data/
+result_image.jpeg
+
 
 # Data files
 *.csv

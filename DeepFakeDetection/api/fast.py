@@ -6,19 +6,19 @@ import numpy as np
 import cv2
 import io
 from DeepFakeDetection.dl_logic.model import load_model, predict, compile_model
+from DeepFakeDetection.dl_logic.data import ela
+from PIL import Image
 
 app = FastAPI()
 
-
-# # Allow all requests (optional, good for development purposes)
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Allows all origins
-#     allow_credentials=True,
-#     allow_methods=["*"],  # Allows all methods
-#     allow_headers=["*"],  # Allows all headers
-# )
-
+# Allow all requests (optional, good for development purposes)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+ )
 app.state.model = load_model()
 
 
@@ -33,12 +33,20 @@ async def receive_image(img: UploadFile=File(...)):
 
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR) # type(cv2_img) => numpy.ndarray
-    print(cv2_img.shape)
-    image_size = (256, 256, 3)
+    #print(f'{cv2_img.shape = } ')
 
-    image= np.resize(cv2_img,image_size)
+    ## Preprocessing image
+    ela_image_path = ela(cv2_img, 50)
+    #print(f'{ela_image_path = }')
+    preprocessed_image = Image.open(ela_image_path)
+    #print(f'{type(preprocessed_image) = }')
+
+    ## Resize image
+    image_size = (256, 256, 3)
+    image= np.resize(preprocessed_image,image_size)
+
     #image= np.reshape(cv2_img,image_size)
-    print(image.shape)
+    #print(f'{image.shape = } {type(image) = }')
     #model = compile_model(app.state.model)
 
     pred = predict(app.state.model, image)
