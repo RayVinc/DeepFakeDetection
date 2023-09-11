@@ -1,3 +1,5 @@
+##to complete before Thursday (once model has been selected)
+
 # Deepfake Detection 👁️
 
 We aim to distinguish between real images and AI-generated and deepfake images, contributing to the fight against disinformation and fraud. Here's why it matters:

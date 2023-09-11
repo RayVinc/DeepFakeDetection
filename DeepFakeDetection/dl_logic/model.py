@@ -12,7 +12,7 @@ from tensorflow.keras.metrics import Recall, Precision
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 
 
-
+#This will need to be updated with the latest model (best pratice - not used)
 def intialize_model():
 
     image_size = (256, 256)
@@ -36,6 +36,7 @@ def intialize_model():
 
     return model
 
+#This will need to be updated with the latest model (best pratice - not used)
 def compile_model(model):
 
     metrics = [
@@ -48,6 +49,7 @@ def compile_model(model):
                 metrics=metrics)
     return model
 
+#This will need to be updated with the latest model (best pratice - not used)
 def train_model(model, train_ds, val_ds):
 
     es = EarlyStopping(patience = 10,
@@ -111,16 +113,17 @@ def evaluate(history):
 
     return None
 
-
+#This MUST be updated: line 122
 def load_model():
 
     path_abs = os.getcwd()
 
     model = tf.keras.models.load_model(os.path.join(path_abs,
-                                       'DeepFakeDetection/models/ELA_imagesize256_256_batchsize64_3Con+3Denselayers.h5'),
+                                       'DeepFakeDetection/models/ELA_imagesize256_256_batchsize64_3Con+3Denselayers.h5'), #this must be updated
                                        compile=False)
     return model
 
+#This MUST be updated: line 134
 def predict(model, image_array):
 
     image_array = image_array.reshape((1,) + image_array.shape)
