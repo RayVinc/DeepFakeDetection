@@ -2,6 +2,7 @@
 .env.yaml
 train_flow-deployment.yaml
 models/
+old_models
 # System files
 .DS_Store
 .ipynb_checkpoints
