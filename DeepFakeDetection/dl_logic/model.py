@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import os
+import tensorflow as tf
 
 from tensorflow.keras import Sequential, layers
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras import callbacks
 from tensorflow.keras.callbacks import ReduceLROnPlateau , ModelCheckpoint, CSVLogger
-from tensorflow.keras.models import load_model
 
 #Best pratice - not used outside Kaggle
 def intialize_compile_model():
@@ -108,19 +108,20 @@ def load_model():
 
     path_abs = os.getcwd()
 
-    model = load_model(os.path.join(path_abs,
-                                    'DeepFakeDetection/models/model_20epochs.h5'),
-                                    compile=False)
+    model = tf.keras.models.load_model(os.path.join(path_abs,
+                                        'DeepFakeDetection/models/model_20epochs.h5'),
+                                        compile=False)
     return model
 
 #This MUST be updated: line 134
 def predict(model, image_array):
 
-    image_array = image_array.reshape((1,) + image_array.shape)
+    #image_array = image_array.reshape((1,) + image_array.shape)
 
     y_pred = model.predict(image_array)
     print(f'{y_pred = }')
-    #y_pred = tf.where(predictions > 0.5,0, 1)
+    #y_pred = tf.where(y_pred > 0.5,0, 1)
+    #print(f'{y_pred = }')
     result = ['fake' if y_pred[0][0] > 0.5 else 'real' ]
 
-    return {'prob':result[0]}
+    return {'prob': result}
