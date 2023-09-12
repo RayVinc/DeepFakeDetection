@@ -1,13 +1,12 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import Response
-
+import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import io
-from DeepFakeDetection.dl_logic.model import load_model, predict, compile_model
-from DeepFakeDetection.dl_logic.data import ela
+from DeepFakeDetection.dl_logic.model import load_model, predict
 from PIL import Image
+import io
+
 
 app = FastAPI()
 
@@ -28,32 +27,27 @@ def index():
 
 @app.post('/upload_image')
 async def receive_image(img: UploadFile=File(...)):
-    ### Receiving and decoding the image
+
+    # Receiving and decoding the image
     contents = await img.read()
+    image = Image.open(io.BytesIO(contents))
 
-    nparr = np.fromstring(contents, np.uint8)
-    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR) # type(cv2_img) => numpy.ndarray
-    #print(f'{cv2_img.shape = } ')
+    # Resizing the image
+    image_size = (128, 128)
 
-    ## Preprocessing image
-    ela_image_path = ela(cv2_img, 50)
-    #print(f'{ela_image_path = }')
-    preprocessed_image = Image.open(ela_image_path)
-    #print(f'{type(preprocessed_image) = }')
+    image_resized=image.resize(image_size)
+    #print(f'😋{type(image_resized) = }')
 
-    ## Resize image
-    image_size = (256, 256, 3)
-    image= np.resize(preprocessed_image,image_size)
+    image_np = np.array(image_resized)
+    #print(f'🍑{image_np.shape = } {type(image_np) = }')
 
-    #image= np.reshape(cv2_img,image_size)
-    #print(f'{image.shape = } {type(image) = }')
-    #model = compile_model(app.state.model)
+    image_scaled_down=image_np/255
+    #print(f'😃{image_scaled_down.shape = } {type(image_scaled_down) = }')
 
-    pred = predict(app.state.model, image)
+    image_preproc = np.expand_dims(image_scaled_down, axis=0)
+    #print(f'😍{image_preproc.shape = } {type(image_preproc) = }')
+
+    pred = predict(app.state.model, image_preproc)
     print(pred)
-    ### Do cool stuff with your image.... For example face detection
 
-    ### Encoding and responding with the image
-   #im = cv2.imencode('.png', annotated_img)[1] # extension depends on which format is sent from Streamlit
-   # return Response(content=im.tobytes(), media_type="image/png")
     return pred
