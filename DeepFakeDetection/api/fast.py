@@ -5,8 +5,7 @@ from starlette.responses import Response
 import numpy as np
 import cv2
 import io
-from DeepFakeDetection.dl_logic.model import load_model, predict, compile_model
-from DeepFakeDetection.dl_logic.data import ela
+from DeepFakeDetection.dl_logic.model import load_model, predict
 from PIL import Image
 
 app = FastAPI()
@@ -35,15 +34,9 @@ async def receive_image(img: UploadFile=File(...)):
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR) # type(cv2_img) => numpy.ndarray
     #print(f'{cv2_img.shape = } ')
 
-    ## Preprocessing image
-    ela_image_path = ela(cv2_img, 50)
-    #print(f'{ela_image_path = }')
-    preprocessed_image = Image.open(ela_image_path)
-    #print(f'{type(preprocessed_image) = }')
-
     ## Resize image
     image_size = (256, 256, 3)
-    image= np.resize(preprocessed_image,image_size)
+    image= np.resize(cv2_img,image_size)
 
     #image= np.reshape(cv2_img,image_size)
     #print(f'{image.shape = } {type(image) = }')
@@ -54,6 +47,6 @@ async def receive_image(img: UploadFile=File(...)):
     ### Do cool stuff with your image.... For example face detection
 
     ### Encoding and responding with the image
-   #im = cv2.imencode('.png', annotated_img)[1] # extension depends on which format is sent from Streamlit
-   # return Response(content=im.tobytes(), media_type="image/png")
+    #im = cv2.imencode('.png', annotated_img)[1] # extension depends on which format is sent from Streamlit
+    # return Response(content=im.tobytes(), media_type="image/png")
     return pred

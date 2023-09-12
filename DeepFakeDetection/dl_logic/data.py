@@ -1,26 +1,30 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-from PIL import Image, ImageChops, ImageEnhance
-import os
-
-from tensorflow.keras.utils import image_dataset_from_directory
-
-# Update this part with the latest model / directory.
+#Best pratice - not used outside Kaggle
 def loading_data():
 
-    image_size = (256, 256)
+    base_path = '/kaggle/input/140k-real-and-fake-faces/real_vs_fake/real-vs-fake/'
 
-    train_ds, val_ds = image_dataset_from_directory(
-        "/kaggle/input/deepfakedetection-lw/Project_Data/real_and_fake_face",
-        validation_split=0.2,
-        color_mode = 'rgb',
-        subset="both",
-        label_mode = "categorical",
-        seed=123,
-        batch_size = 32,
-        image_size=image_size)
+    ig = ImageDataGenerator(rescale=1./255.)
+    train_flow = ig.flow_from_directory(
+        base_path + 'train/',
+        target_size=(128, 128),
+        batch_size=64,
+        class_mode='categorical'
+    )
 
-    return train_ds, val_ds
+    valid_flow = ig.flow_from_directory(
+        base_path + 'valid/',
+        target_size=(128, 128),
+        batch_size=64,
+        class_mode='categorical'
+    )
+
+    test_flow = ig.flow_from_directory(
+        base_path + 'test/',
+        target_size=(128, 128),
+        batch_size=1,
+        shuffle = False,
+        class_mode='categorical'
+)
+    return train_flow, valid_flow, test_flow

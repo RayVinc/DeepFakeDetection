@@ -1,78 +1,68 @@
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
 import os
 
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import image_dataset_from_directory
-from tensorflow.keras import models, Sequential, layers, regularizers
-from tensorflow.keras.losses import CategoricalCrossentropy
-from tensorflow.keras.metrics import Recall, Precision
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from tensorflow.keras import Sequential, layers
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras import callbacks
+from tensorflow.keras.callbacks import ReduceLROnPlateau , ModelCheckpoint, CSVLogger
+from tensorflow.keras.models import load_model
 
-
-#This will need to be updated with the latest model (best pratice - not used)
-def intialize_model():
-
-    image_size = (256, 256)
-
-    model = models.Sequential()
-
-    model.add(layers.Rescaling(1/255, input_shape=(image_size[0],image_size[1],3)))
-    model.add(layers.Conv2D(8, kernel_size = (4,4), activation='relu'))
-    model.add(layers.MaxPool2D(pool_size=(2,2)))
-    model.add(layers.Conv2D(16, kernel_size = (3,3), activation='relu'))
-    model.add(layers.MaxPool2D(pool_size=(2,2)))
-    model.add(layers.Conv2D(32, kernel_size = (2,2), activation='relu'))
-    model.add(layers.MaxPool2D(pool_size=(2,2)))
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(32, activation='relu'))
-    model.add(layers.Dropout(rate=0.2))
-    model.add(layers.Dense(16, activation='relu'))
-    model.add(layers.Dropout(rate=0.2))
-    model.add(layers.Dense(2, activation='softmax'))
-
+#Best pratice - not used outside Kaggle
+def intialize_compile_model():
+    densenet = ResNet50(
+                        weights='imagenet',
+                        include_top=False,
+                        input_shape=(128,128,3)
+                        )
+    model = Sequential([densenet,
+                        layers.GlobalAveragePooling2D(),
+                        layers.Dense(512,activation='relu'),
+                        layers.BatchNormalization(),
+                        layers.Dense(2, activation='softmax')
+                        ])
+    model.compile(optimizer=Adam(lr=0.001),
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy']
+                 )
     return model
 
-#This will need to be updated with the latest model (best pratice - not used)
-def compile_model(model):
+#Best pratice - not used outside Kaggle
+def train_model(model, train_flow, valid_flow):
+    es = callbacks.EarlyStopping(patience=10, restore_best_weights=True)
 
-    metrics = [
-        Recall(name='recall'),
-        Precision(name='precision'),
-        'accuracy']
+    checkpoint = ModelCheckpoint(filepath='model_20epochs.h5',
+                                save_best_only=True,
+                                save_weights_only=False,
+                                verbose=1,
+                                mode='min',
+                                monitor='val_loss'
+                                )
+    reduce_lr = ReduceLROnPlateau(monitor='val_loss',
+                                factor=0.2,
+                                patience=3,
+                                verbose=1,
+                                min_delta=0.0001
+                                )
 
-    model.compile(optimizer='adam',
-                loss='categorical_crossentropy',
-                metrics=metrics)
-    return model
+    csv_logger = CSVLogger('training.log')
 
-#This will need to be updated with the latest model (best pratice - not used)
-def train_model(model, train_ds, val_ds):
+    callbacks = [checkpoint, reduce_lr, csv_logger, es]
 
-    es = EarlyStopping(patience = 10,
-                   restore_best_weights = True,
-                   monitor = 'val_loss')
+    train_steps = 100000//64
+    valid_steps = 20000//64
 
-    mcp = ModelCheckpoint("{}.h5".format('base_model'),
-                      save_weights_only=True,
-                      monitor='val_loss',
-                      mode='min',
-                      verbose=0,
-                      save_best_only=True)
-
-    history = model.fit(train_ds,
-          validation_data = val_ds,
-          batch_size = 64,
-          epochs = 300,
-          callbacks = [es,mcp])
-
-    print(f"✅ Model trained on train_ds")
+    history = model.fit(train_flow,
+        epochs = 30,
+        steps_per_epoch =train_steps,
+        validation_data =valid_flow,
+        validation_steps = valid_steps,
+        callbacks=callbacks
+    )
 
     return model, history
 
+#Best pratice - not used outside Kaggle
 def evaluate(history):
 
     fig, ax =plt.subplots(1,3,figsize=(20,5))
@@ -113,14 +103,14 @@ def evaluate(history):
 
     return None
 
-#This MUST be updated: line 122
+# Use to load the model
 def load_model():
 
     path_abs = os.getcwd()
 
-    model = tf.keras.models.load_model(os.path.join(path_abs,
-                                       'DeepFakeDetection/models/ELA_imagesize256_256_batchsize64_3Con+3Denselayers.h5'), #this must be updated
-                                       compile=False)
+    model = load_model(os.path.join(path_abs,
+                                    'DeepFakeDetection/models/model_20epochs.h5'),
+                                    compile=False)
     return model
 
 #This MUST be updated: line 134
