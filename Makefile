@@ -9,19 +9,6 @@ install_requirements:
 
 #################### BUILD CLOUD API ###################
 
-# Your personal GCP project for this bootcamp
-GCP_PROJECT=intense-reason-393109
-GCP_REGION=europe-west1
-
-# API on Gcloud Run
-GCR_IMAGE=deepfake
-GCR_REGION=eu.gcr.io
-GCR_MEMORY=2Gi
-
-SERVICE_URL=https://deepfakepreproc-abexurulqa-ew.a.run.app/docs
-#to update
-
-
 ##Test local api
 run_api:
 	uvicorn DeepFakeDetection.api.fast:app --reload
