@@ -16,6 +16,11 @@ run_api:
 ## Build docker image
 build_docker:
 	docker build --no-cache --tag=${GCR_IMAGE} .
+#
+#If ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE
+#		 run: sudo pip install --no-cache-dir flask
+# or run: pip install tensorflow==2.10.0 --no-cache-dir (or any package)
+# or run: pip install tensorflow==2.10.0 --no-cache-dir
 #docker images: displays all the images
 
 run_docker:

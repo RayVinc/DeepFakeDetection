@@ -10,7 +10,7 @@ requirements = [x.strip() for x in content if "git+" not in x]
 setup(name='DeepFakeDetection',
       version="0.0.1",
       description="Deepfake detection model (api_pred)",
-      install_requires=requirements,
+      #install_requires=requirements, #comment to make the docker build faster
       packages=find_packages(),
       # include_package_data: to install data from MANIFEST.in
       include_package_data=True,
