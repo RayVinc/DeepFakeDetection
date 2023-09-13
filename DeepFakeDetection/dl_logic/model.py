@@ -113,15 +113,10 @@ def load_model():
                                         compile=False)
     return model
 
-#This MUST be updated: line 134
+# Use to make a prediction on a new image and send back probabiliy
 def predict(model, image_array):
 
-    #image_array = image_array.reshape((1,) + image_array.shape)
-
     y_pred = model.predict(image_array)
-    print(f'{y_pred = }')
-    #y_pred = tf.where(y_pred > 0.5,0, 1)
     #print(f'{y_pred = }')
-    result = ['fake' if y_pred[0][0] > 0.5 else 'real' ]
 
-    return {'prob': result}
+    return {'prob': y_pred.tolist()[0]}
