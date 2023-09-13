@@ -2,7 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
 from DeepFakeDetection.dl_logic.model import load_model, predict
 from PIL import Image
 import io
