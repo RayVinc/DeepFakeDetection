@@ -14,12 +14,12 @@ run_api:
 	uvicorn DeepFakeDetection.api.fast:app --reload
 
 ## Build docker image
-buid_docker:
-	docker build --no-cache --tag=deepfake .
+build_docker:
+	docker build --no-cache --tag=${GCR_IMAGE} .
 #docker images: displays all the images
 
 run_docker:
-	docker run -e PORT=8000 -p 8000:8000 deepfake
+	docker run -e PORT=8000 -p 8000:8000 ${GCR_IMAGE}
 
 ## Image in Google Run Platform
 
