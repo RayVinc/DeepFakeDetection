@@ -49,17 +49,20 @@ Our project's directory structure is designed for organization and easy access. 
 │   │   ├── __init__.cpython-310.pyc
 │   │   └── model.cpython-310.pyc
 │   ├── __init__.py
-│   ├── data.py              # Deep learning data handling logic
-│   └── model.py             # Deep learning model logic
+│   ├── data.py              # Loading train, val and test sets on Kaggle
+│   └── model.py             # Deep learning model training logic & loading model
 ├── models                   # Directory for storing pre-trained models
-│   └── base_model_federico_is_not_helping.h5
+│   └── past_models          # Directory for storing old pre-trained models
 ├── __init__.py              # Python package initializer
+├── DeepFakeDetection.egg-info
 ├── notebooks                # Jupyter notebooks directory
 │   └── past_versions        # Past versions of notebooks
-├── old_models               # Directory for storing old models
-│   └── base_line model
 ├── raw_Data                 # Directory for raw data
 ├── .env                     # Environment configuration file
+├── .env.sample              # Sample environment configuration file
+├── .env.sample.yaml         # Sample environment configuration file to deploy on Cloud Run
+├── .env.yaml                # Environment configuration file to deploy on Cloud Run
+├── .envrc                   # directory-specific variables
 ├── .gitignore               # Git ignore file
 ├── .python-version          # Python version specifier
 ├── Dockerfile               # Docker container configuration
@@ -95,7 +98,7 @@ In this project, we leverage the Kaggle platform to access the dataset containin
 Before loading the dataset, ensure you've downloaded it from Kaggle and organized it in your project directory. The dataset should contain two folders: one for fake images and another for real images. Proper organization is crucial for accurate label assignment during data loading.
 
 ## Step 2: Exploring the Loaded Data
-Upon running the provided code using 'image_dataset_from_directory' funtion, we'll create labeled datasets for fake and real images. These labels are essential for supervised deep learning tasks, such as deepfake detection. Additionally, the function inherently batches your data, which is advantageous for efficient model training and evaluation.
+Upon running the provided code using 'ImageDataGenerator().flow_from_directory()' funtion, we'll create labeled datasets for fake and real images. These labels are essential for supervised deep learning tasks, such as deepfake detection. Additionally, the function inherently batches your data, which is advantageous for efficient model training and evaluation.
 
 # 2.2) Exploratory Data Analysis 🔍
 
@@ -112,7 +115,7 @@ The dataset encompasses two main components:
 ### Data Preprocessing
 To facilitate analysis and modeling, the dataset has undergone preprocessing steps, including:
 
-  1. Image Resizing: All images have been uniformly resized to 256 pixels, ensuring consistent dimensions for analysis and model training.
+  1. Image Resizing: All images have been uniformly resized to 128 pixels, ensuring consistent dimensions for analysis and model training.
 
   2. Data Split: The dataset has been partitioned into train, validation, and test sets, which are essential for training and evaluating machine learning models effectively.
 
@@ -142,14 +145,7 @@ In the journey towards developing an effective deepfake detection system, it's i
 
 Our approach involves trying out state-of-the-art models and custom architectures, comparing their performance, and selecting the one that best suits the project's goals. This iterative process allows us to continually improve the model's accuracy and robustness in detecting deepfake images.
 
-# 2.5) Preprocess Data 🧹
-
-## Preparing Data for Model Training
-Data preprocessing is a critical step in the deepfake detection pipeline. It involves transforming raw image data into a format suitable for model training. Our dataset may require several preprocessing steps, such as resizing, normalization, and data augmentation, to ensure that our models can learn effectively from the data.
-
-Preprocessing also involves handling class imbalances, cleaning noisy data, and splitting the dataset into training, validation, and test sets. These steps are essential for model stability and generalization.
-
-# 2.6) Architectural Model 🏗️
+# 2.5) Architectural Model 🏗️
 
 ## Model Architecture Overview
 Our chosen model architecture is based on the ResNet50 architecture, a widely recognized deep convolutional neural network. This architecture has been pretrained on the ImageNet dataset and is known for its ability to capture complex image features.
@@ -168,50 +164,34 @@ Our model is compiled using the Adam optimizer with a learning rate of 0.001 and
 
 The summary of the model's architecture and its parameters is displayed below:
 
-  Model Summary:
-  -------------------
-  Layer (type)               Output Shape
-  -------------------
-  resnet50 (Functional)      (None, 4, 4, 2048)
-  conv2d (Conv2D)            (None, 2, 2, 8)
-  global_average_pooling2d   (None, 8)
-  flatten (Flatten)          (None, 8)
-  dense (Dense)              (None, 512)
-  batch normalization        (None, 512)
-  dense_1 (Dense)            (None, 2)
-  -------------------
-  Total params: 23,742,858
-  Trainable params: 23,688,714
-  Non-trainable params: 54,144
+![Model summary](picturereadme/model_summary.png "Model summary")
 
 This architectural model forms the foundation for our deepfake detection system and will undergo further experimentation and fine-tuning as we proceed with the project.
 
-# 2.7) Evaluate Model 📈
-TODO: Please write here about the results.
+# 2.6) Evaluate Model 📈
+![Learning Curves](picturereadme/learningcurvesmodel.png "Learning Curves")
 
-# 2.8) Fine-tuning 🛠️
-TODO: Please write here about the process.
+The model stabilizes quickly after an initial experimentation phase and will not significantly increase in accuracy when run for more epochs
 
-# 2.9) Extra Data 📚
-Exploring Data Augmentation and Model Complexity
+# 2.7) Fine-tuning 🛠️
+We played with a number of layouts and hyperparameters. The goal was to increase accuracy.
+
+# 2.8) Extra Data 📚
 In our pursuit of creating an effective deepfake detection system, we left no stone unturned. This included experimenting with data augmentation techniques and adding extra layers to our model architecture. Here's a brief overview of our exploration:
 
 ### Data Augmentation 🔄
 We leveraged tools like Roboflow to explore data augmentation possibilities. Data augmentation involves applying various transformations to the training data to artificially increase its diversity. This can include rotations, flips, zooms, and more. The goal is to expose our model to a wider range of variations it might encounter in real-world scenarios.
 
 ### Additional Layers in Model 🧱
-We considered adding extra layers to our model architecture to make it more complex and potentially more capable of capturing intricate features in the data. This could involve increasing the depth of the neural network, adding more convolutional layers, or experimenting with different activation functions.
+We considered adding extra layers to our model architecture to make it more complex and potentially more capable of capturing intricate features in the data. This could involve increasing the depth of the neural network, adding more convolutional layers, or experimenting with different activation functions. We also tried to simplify it until the accuracy decreased.
 
 ### Achieving Good Results Early On 🎯
 One notable outcome of our experimentation was that we achieved promising results relatively early in the project. Our baseline model, as well as some early iterations with minimal data augmentation and layers, exhibited strong performance in distinguishing between real and fake images.
 
-### Discarding the Extra Complexity 🚮
+## 2.9) Model Interpretability 🤖
 Given the good results achieved without the need for extensive data augmentation or additional layers, we made a pragmatic decision. We chose to maintain a simpler and more interpretable model architecture. This approach not only ensures computational efficiency but also reduces the risk of overfitting and makes the model easier to fine-tune and deploy.
 
 By making this decision, we can maintain a balance between model complexity and performance, allowing us to focus on other aspects of the project, such as model interpretability, explainability, and ethical considerations.
-
-## 2.10) Model Interpretability 🤖
-TODO: Please write here about the methods and tools used for model interpretability.
 
 # 3️⃣ Web App Development 🌐
 
@@ -235,19 +215,18 @@ Our deepfake detection web app includes the following features:
   1. Image Upload: Users can upload their own images for analysis.
   2. Real/Fake Prediction: The app predicts whether the uploaded image is real or fake, providing a confidence score.
   3. Confidence Threshold: Users can set a confidence threshold to determine the level of certainty required for a prediction.
-  4. Explanation: For transparency and interpretability, the app generates explanations for the prediction, highlighting key features that contributed to the decision.
 
-## 3.2) Deployment 🚀
-We have deployed our web app using various cloud platforms. Here's a summary of our deployment options:
+## 3.2) Running API in the cloud 🔨
+The API is based on FastAPI.
+There are 2 endpoints
+- GET: /. Returns 'status: ok' if API running.
+- POST: /upload_image. It takes an image as input and the response is a list of 2 probabilities (eg: [0.99, 0.01]). [1,0] is a 100% fake image and [0, 1] is a 100% real image.
 
-### Heroku Deployment
-Heroku is a cloud platform that simplifies the deployment of web applications. We've deployed our deepfake detection web app on Heroku, making it accessible to users through a web browser.
+Note: If you are on Mac or Linux, change the base image in the dockerfile.
 
-### Deployment Link:
-
-[Deepfake Detection Web App](https://fakefacedetection.streamlit.app/)
-
-Please note that while both deployment options are functional, we recommend using the Heroku link as our primary deployment. It offers a seamless user experience and high availability.
+## 3.3) Deployment 🚀
+We have deployed our web app using streamlit and Google Run Cloud API.
+Deployment Link: [Deepfake Detection Web App](https://fakefacedetection.streamlit.app/)
 
 ## 3.3) User Guide 📖
 How to Use the Deepfake Detection Web App
@@ -259,11 +238,7 @@ Our deepfake detection web app is designed to be user-friendly and intuitive. Fo
 
   3. Prediction: After uploading an image, the app will process it and provide a prediction regarding whether the image is real or fake. The prediction will include a confidence score.
 
-  4. Confidence Threshold (Optional): You can adjust the confidence threshold slider to set the minimum level of confidence required for a prediction to be considered valid. This allows you to control the app's sensitivity to different levels of certainty.
-
-  5. Explanation (Optional): Click the "Show Explanation" button to view an explanation for the prediction. This explanation highlights key features in the image that contributed to the decision.
-
-  6. Upload Another Image: To analyze additional images, click the "Upload Image" button again and repeat the process.
+  4. Upload Another Image: To analyze additional images, click the "Upload Image" button again and repeat the process.
 
   7. Enjoy and Share: Explore the app's functionality, share it with others, and use it to detect deepfake images for various purposes, from educational awareness to verifying image authenticity.
 
