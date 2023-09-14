@@ -171,6 +171,8 @@ This architectural model forms the foundation for our deepfake detection system 
 # 2.6) Evaluate Model 📈
 ![Learning Curves](picturereadme/learningcurvesmodel.png "Learning Curves")
 
+The model stabilizes quickly after an initial experimentation phase and will not significantly increase in accuracy when run for more epochs
+
 # 2.7) Fine-tuning 🛠️
 We played with a number of layouts and hyperparameters. The goal was to increase accuracy.
 
@@ -217,16 +219,14 @@ Our deepfake detection web app includes the following features:
 ## 3.2) Running API in the cloud 🔨
 The API is based on FastAPI.
 There are 2 endpoints
-- GET: /
+- GET: /. Returns 'status: ok' if API running.
 - POST: /upload_image. It takes an image as input and the response is a list of 2 probabilities (eg: [0.99, 0.01]). [1,0] is a 100% fake image and [0, 1] is a 100% real image.
 
 Note: If you are on Mac or Linux, change the base image in the dockerfile.
 
 ## 3.3) Deployment 🚀
 We have deployed our web app using streamlit and Google Run Cloud API.
-
-### Deployment Link:
-[Deepfake Detection Web App](https://fakefacedetection.streamlit.app/)
+Deployment Link: [Deepfake Detection Web App](https://fakefacedetection.streamlit.app/)
 
 ## 3.3) User Guide 📖
 How to Use the Deepfake Detection Web App
